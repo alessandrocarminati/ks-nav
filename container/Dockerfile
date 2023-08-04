@@ -74,6 +74,7 @@ RUN mkdir -p /run/postgresql && chown postgres:postgres /run/postgresql
 COPY --from=builder /usr/bin/nav-db-filler /usr/bin
 COPY --from=builder /usr/bin/nav /usr/bin
 COPY --from=builder /usr/bin/navweb /usr/bin
+COPY --from=builder /build/ksnav//navweb/templates/ /app
 COPY --from=builder /build/ksnav/kern_bin_db/psql.sql /tmp
 COPY --from=builder /build/radare2/libr/reg/libr_reg.so /usr/lib
 COPY --from=builder /build/radare2/libr/syscall/libr_syscall.so /usr/lib
