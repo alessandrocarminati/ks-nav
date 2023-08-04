@@ -19,7 +19,7 @@ type ImageGenerationRequest struct {
 func main() {
 	router := gin.Default()
 
-	router.LoadHTMLFiles("/app/templates/index.html")
+	router.LoadHTMLFiles("/var/templates/index.html")
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)

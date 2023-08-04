@@ -74,7 +74,8 @@ RUN mkdir -p /run/postgresql && chown postgres:postgres /run/postgresql
 COPY --from=builder /usr/bin/nav-db-filler /usr/bin
 COPY --from=builder /usr/bin/nav /usr/bin
 COPY --from=builder /usr/bin/navweb /usr/bin
-COPY --from=builder /build/ksnav//navweb/templates/ /app
+RUN mkdir -p /var/templates
+COPY --from=builder /build/ksnav//navweb/templates/ /app/templates
 COPY --from=builder /build/ksnav/kern_bin_db/psql.sql /tmp
 COPY --from=builder /build/radare2/libr/reg/libr_reg.so /usr/lib
 COPY --from=builder /build/radare2/libr/syscall/libr_syscall.so /usr/lib
@@ -103,5 +104,6 @@ COPY --from=builder /build/radare2/binr/radare2/radare2 /usr/bin
 EXPOSE 8080
 
 #start the thing
+RUN find /app
 RUN echo -e '#!/bin/sh\nsu postgres -c "pg_ctl start -D ${POSTGRES_DATA_DIR}/${POSTGRES_NAME}"\n/usr/bin/navweb\n' >/usr/bin/start.sh && chmod +x /usr/bin/start.sh
 ENTRYPOINT ["/usr/bin/start.sh"]
