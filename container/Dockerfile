@@ -23,10 +23,11 @@ RUN git clone ${RADARE2_GIT_REPO} /build/radare2 && cd /build/radare2 && git che
 RUN cd /build/radare2 && ./configure && make && make install
 
 # Build ks-nav (on production: https://github.com/alessandrocarminati/ks-nav.git)
+
 RUN git clone ${KS_NAV_GIT_REPO} /build/ksnav && cd /build/ksnav/kern_bin_db && git checkout ${KS_NAV_GIT_REPO_BRANCH}
 RUN cd /build/ksnav/kern_bin_db && make && make install
 RUN cd /build/ksnav/nav && make && make install
-RUN cd /build/ksnav/navweb && make && make install
+RUN cd /build/ksnav/navweb && go get -u github.com/go-bindata/go-bindata/... && go install github.com/go-bindata/go-bindata/... && make && make install
 
 ##############################################################################################################################################
 
@@ -74,8 +75,8 @@ RUN mkdir -p /run/postgresql && chown postgres:postgres /run/postgresql
 COPY --from=builder /usr/bin/nav-db-filler /usr/bin
 COPY --from=builder /usr/bin/nav /usr/bin
 COPY --from=builder /usr/bin/navweb /usr/bin
-RUN mkdir -p /var/templates
-COPY --from=builder /build/ksnav//navweb/templates/ /app/templates
+#RUN mkdir -p /var/templates
+#COPY --from=builder /build/ksnav//navweb/templates/ /var/templates
 COPY --from=builder /build/ksnav/kern_bin_db/psql.sql /tmp
 COPY --from=builder /build/radare2/libr/reg/libr_reg.so /usr/lib
 COPY --from=builder /build/radare2/libr/syscall/libr_syscall.so /usr/lib
