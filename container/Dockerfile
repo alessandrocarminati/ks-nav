@@ -62,7 +62,7 @@ RUN chown -R postgres:postgres ${POSTGRES_DATA_DIR} && \
 RUN [ ! -d ${POSTGRES_DATA_DIR}/${POSTGRES_NAME} ] && \
 	mkdir -p ${POSTGRES_DATA_DIR}/${POSTGRES_NAME} && \
 	cd ${POSTGRES_DATA_DIR}/${POSTGRES_NAME} && \
-	tar -zxvf /tmp/empty.pg.db.tar.gz && \
+	tar -zxvf /tmp/pg.db.tar.gz && \
 	chown -R postgres:postgres ${POSTGRES_DATA_DIR}/${POSTGRES_NAME} && \
 	chmod 750 ${POSTGRES_DATA_DIR}/${POSTGRES_NAME}  && \
 	cd -

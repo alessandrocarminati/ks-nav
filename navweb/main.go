@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"github.com/gin-gonic/gin"
 	"log"
+	"os"
 	"net/http"
 	"os/exec"
 	"html/template"
@@ -87,8 +88,8 @@ func generateImageHandler(c *gin.Context) {
 		return
 	}
 
-	cmdstr:=fmt.Sprintf("nav -f /tmp/container.json -s %s -i %d -m %s -x %s -g 1 -j graphOnly |dot -Tsvg", request.StartSymbol, request.Instance, request.DisplayMode, request.Depth)
-	cmd := exec.Command("/bin/bash", "-c", cmdstr)
+	cmdstr:=fmt.Sprintf("nav -f /tmp/container.json -s %s -i %d -m %s -x %s -j graphOnly |dot -Tsvg", request.StartSymbol, request.Instance, request.DisplayMode, request.Depth)
+	cmd := exec.Command("/bin/sh", "-c", cmdstr)
 	fmt.Println("Executing command:", cmd.String())
 	output, err := cmd.Output()
 	if err != nil {
@@ -133,11 +134,11 @@ func main() {
 
 	router.POST("/generate-image", generateImageHandler)
 
-	index, err := Asset("data/configs/container.json")
+	conf_file, err := Asset("data/configs/container.json")
 	if err != nil {
 		panic(err)
 	}
-	err := os.WriteFile("/tmp/container.json", d1, 0644)
+	err = os.WriteFile("/tmp/container.json", conf_file, 0644)
 
 	router.Run(":8080")
 }
