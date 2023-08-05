@@ -1,10 +1,7 @@
-EXECUTABLE=navweb
-INSTALL_DIR=/usr/bin/
 
-all: main.go
-	make -C nav
-	go build -o $(EXECUTABLE)
+all: main.go data.go
+	go build
 
-install: $(EXECUTABLE)
-	cp $(EXECUTABLE)  $(INSTALL_DIR)
+data.go: data
+	${GOBIN}/go-bindata -o data.go data/templates/ data/confs/
 
