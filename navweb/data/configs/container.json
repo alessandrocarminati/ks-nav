@@ -1,0 +1,12 @@
+{
+"DBURL":"127.0.0.1",
+"DBPort":5432,
+"DBUser":"postgres",
+"DBPassword":"<password>",
+"DBTargetDB":"kernel_bin",
+"ExcludedBefore": ["__fentry__", "__stack_chk_fail"],
+"ExcludedAfter": ["^kfree$","^_raw_spin_lock$","^_raw_spin_unlock$","^panic$","^call_rcu$", "^__call_rcu$","__rcu_read_unlock", "__rcu_read_lock", "path_openat"],
+"Target_sybsys":[],
+"MaxDepth":1,
+"Jout": "TextPlain",
+}
