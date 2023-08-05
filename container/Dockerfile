@@ -55,7 +55,8 @@ RUN apk add --no-cache binutils
 
 WORKDIR /app
 COPY postgres_conf_template.conf /tmp
-copy empty.pg.db.tar.gz /tmp
+# pg.db.tar.gz is a link, please set it to empty database, or whatever db you have.
+copy pg.db.tar.gz /tmp
 RUN chown -R postgres:postgres ${POSTGRES_DATA_DIR} && \
 	chmod 750 ${POSTGRES_DATA_DIR}
 RUN [ ! -d ${POSTGRES_DATA_DIR}/${POSTGRES_NAME} ] && \
