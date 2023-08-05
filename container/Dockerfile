@@ -50,6 +50,7 @@ ENV START_SCRIPT_NAME=$_START_SCRIPT_NAME
 # install dependencies
 RUN apk add --no-cache postgresql postgresql-contrib postgresql-client
 RUN apk add --no-cache binutils
+RUN apk add --no-cache graphviz
 
 # setup resources
 
