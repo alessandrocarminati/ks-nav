@@ -33,7 +33,7 @@ func handleWebSocket(c *gin.Context) {
 	defer conn.Close()
 
 	log.Println("handleWebSocket - execute")
-	cmd := exec.Command("./stocazzo.sh", "2", "10")
+	cmd := exec.Command("nav-db-filler")
 	cmdReader, err := cmd.StdoutPipe()
 	if err != nil {
 		log.Println("Error creating stdout pipe:", err)
