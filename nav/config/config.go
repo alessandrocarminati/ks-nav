@@ -187,6 +187,6 @@ func validateGType(t *c.OutIMode) error {
         case c.OText, c.OPNG, c.OJPG, c.OSVG:
                 return nil
         default:
-                return fmt.Errorf("invalid graphviz output type: %s\nChoose one of the following: 0, 1, 2, 3", *t)
+                return fmt.Errorf("invalid graphviz output type: %s\nSee help for more details.", *t)
         }
 }

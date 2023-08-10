@@ -1,9 +1,15 @@
 # BUILDER
 FROM alpine:latest AS builder
 
-#build ARGs
+# build ARGs
 ARG _RADARE2_GIT_REPO="https://github.com/radareorg/radare2.git"
 ENV RADARE2_GIT_REPO=$_RADARE2_GIT_REPO
+# Radare2 constitutes a noteworthy dependency. 
+# However, it's a software that undergoes consistent changes across commits. 
+# In my experience, even within the same minor version, significant alterations can be observed. 
+# Despite ks-nav not utilizing any uncommon features of Radare2, I prefer to adhere to the most thoroughly tested commit.
+ARG _RADARE2_GIT_COMMIT=ecd8d00aad289abf8f850b45d5f6c2e6b0c15c0f
+ENV RADARE2_GIT_COMMIT=$_RADARE2_GIT_COMMIT
 
 ARG _KS_NAV_GIT_REPO="https://github.com/elisa-tech/ks-nav"
 ENV KS_NAV_GIT_REPO=$_KS_NAV_GIT_REPO
@@ -15,11 +21,11 @@ RUN apk add --no-cache autoconf automake build-base git
 RUN apk add --no-cache go
 RUN apk add --no-cache linux-headers
 
-#build app
+# build app
 WORKDIR /build
 
 # Build radare2
-RUN git clone ${RADARE2_GIT_REPO} /build/radare2 && cd /build/radare2 && git checkout ecd8d00aad289abf8f850b45d5f6c2e6b0c15c0f
+RUN git clone ${RADARE2_GIT_REPO} /build/radare2 && cd /build/radare2 && git checkout ${RADARE2_GIT_COMMIT}
 RUN cd /build/radare2 && ./configure && make && make install
 
 # Build ks-nav
@@ -35,7 +41,7 @@ RUN cd /build/ksnav/navweb && go get -u github.com/go-bindata/go-bindata/... && 
 # RUNTIME
 FROM alpine:latest
 
-#run ARGs
+# run ARGs
 ARG _POSTGRES_NAME=only
 ENV POSTGRES_NAME=$_POSTGRES_NAME
 ARG _POSTGRES_DATA_DIR=/var/lib/postgresql/data/
@@ -105,7 +111,7 @@ COPY --from=builder /build/radare2/libr/anal/libr_anal.so /usr/lib
 COPY --from=builder /build/radare2/binr/radare2/radare2 /usr/bin
 EXPOSE 8080
 
-#start the thing
+# start the thing
 RUN find /app
 RUN echo -e '#!/bin/sh\nsu postgres -c "pg_ctl start -D ${POSTGRES_DATA_DIR}/${POSTGRES_NAME}"\n/usr/bin/navweb\n' >/usr/bin/start.sh && chmod +x /usr/bin/start.sh
 ENTRYPOINT ["/usr/bin/start.sh"]
