@@ -285,3 +285,36 @@ func (d *SqlDB) symbSubsys(symblist []int, instance int) (string, error) {
 	debugIOPrintf("output string=%s, error=%s\n", out, "nil")
 	return out, nil
 }
+
+
+// Returns the set of globaldata that a given symbol has.
+func (d *SqlDB) symbGData(symb string, instance int) ([]string, error) {
+	var out []string
+	var res string
+
+	query := fmt.Sprintf("select symbol_name from nm_symbol where nm_sym_id in (select data_sym_id from data_xrefs where func_id in (select symbol_id from symbols where symbol_name ='%s' and symbol_instance_id_ref=%d));", symb, instance)
+	debugQueryPrintln(query)
+	rows, err := d.db.Query(query)
+	if err != nil {
+		err = errors.New("symbSubsys: query failed")
+		debugIOPrintf("output string=%s, error=%s\n", "", err)
+		return []string{}, err
+	}
+	defer func() {
+		closeErr := rows.Close()
+		if err == nil {
+			err = closeErr
+		}
+	}()
+
+	for rows.Next() {
+		if err := rows.Scan(&res); err != nil {
+			err = errors.New("symbSubsys: error while scan query rows")
+			debugIOPrintf("output string=%s, error=%s\n", "", err)
+			return []string{}, err
+		}
+		out = append(out,res)
+	}
+	return out, nil
+}
+// returns a premade edge for func 
