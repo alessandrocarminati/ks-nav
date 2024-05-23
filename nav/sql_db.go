@@ -296,7 +296,7 @@ func (d *SqlDB) symbGData(symb string, instance int) ([]string, error) {
 	debugQueryPrintln(query)
 	rows, err := d.db.Query(query)
 	if err != nil {
-		err = errors.New("symbSubsys: query failed")
+		err = errors.New("symbGData: query failed")
 		debugIOPrintf("output string=%s, error=%s\n", "", err)
 		return []string{}, err
 	}
@@ -309,7 +309,7 @@ func (d *SqlDB) symbGData(symb string, instance int) ([]string, error) {
 
 	for rows.Next() {
 		if err := rows.Scan(&res); err != nil {
-			err = errors.New("symbSubsys: error while scan query rows")
+			err = errors.New("symbGData: error while scan query rows")
 			debugIOPrintf("output string=%s, error=%s\n", "", err)
 			return []string{}, err
 		}
@@ -318,3 +318,31 @@ func (d *SqlDB) symbGData(symb string, instance int) ([]string, error) {
 	return out, nil
 }
 // returns a premade edge for func 
+func (d *SqlDB) symbGDataFuncOf(symb string, instance int) []string {
+	var out []string
+	var res string
+
+//	query := fmt.Sprintf("select symbol_name from symbols where symbol_id in(select func_id from data_xrefs where data_sym_id in (select nm_sym_id from nm_symbol where nm_symbol_instance_id_ref = %d and symbol_name = '%s'));", instance, symb)
+	query := fmt.Sprintf("select symbol_name from symbols where symbol_id in (select func_id from data_xrefs where data_sym_id in (select nm_sym_id from nm_symbol where nm_symbol_instance_id_ref = %d and symbol_name = '%s'));", instance, symb)
+//	fmt.Println(query)
+	debugQueryPrintln(query)
+	rows, err := d.db.Query(query)
+	if err != nil {
+		debugIOPrintf("output string=%s, error=symbGData: query failed\n", "")
+		return []string{}
+	}
+	defer func() {
+		closeErr := rows.Close()
+		if err == nil {
+			err = closeErr
+		}
+	}()
+	for rows.Next() {
+		if err := rows.Scan(&res); err != nil {
+			debugIOPrintf("output string=%s, error=symbGData: error while scan query rows\n", "")
+			return []string{}
+		}
+		out = append(out, fmt.Sprintf("\"%s\" -> \"%s\"", res, symb))
+	}
+	return out
+}

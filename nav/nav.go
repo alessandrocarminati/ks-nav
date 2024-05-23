@@ -36,8 +36,8 @@ var fmtDotHeader = []string{
 	"digraph G {\\\\\\nrankdir=\"LR\"\\\\\\n",
 	"digraph G {\nrankdir=\"LR\"\n",
 	"digraph G {\nrankdir=\"LR\"\n",
-	"digraph G {\nlayout=\"fdp\"\noverlap=\"1:scalexy\"\nnode [shape=\"ellipse\";style=filled;color=orange];\n",
-	"digraph G {\nlayout=\"fdp\"\noverlap=\"1:scalexy\"\nnode [shape=\"ellipse\";style=filled;color=orange];\n",
+	"digraph G {\nlayout=\"fdp\"\noverlap=\"1:scalexy\"\nnode [shape=\"box\";style=filled;color=green];\n",
+	"digraph G {\nlayout=\"fdp\"\noverlap=\"1:scalexy\"\nnode [shape=\"box\";style=filled;color=green];\n",
 }
 
 var fmtDotNodeHighlightWSymb = "\"%[1]s\" [shape=record style=\"rounded,filled,bold\" fillcolor=yellow label=\"%[1]s|%[2]s\"]\n"
@@ -131,7 +131,7 @@ func generateOutput(d Datasource, cfg *config.Config) (string, error) {
 		return "", err
 	}
 
-	graphOutput = fmtDotHeader[opt2num(conf.Type)]
+	graphOutput = fmtDotHeader[conf.Mode]
 	if conf.Mode <= c.PrintTargeted {
 		entry, err := d.getEntryById(start, conf.DBInstance)
 		if err != nil {
@@ -182,14 +182,17 @@ func generateOutput(d Datasource, cfg *config.Config) (string, error) {
 		        }
 		}
 */
-		graphOutput += fmt.Sprintf(" \"%s\" [shape=house;style=filled;color=cyan;];", conf.Symbol)
+		graphOutput += fmt.Sprintf(" \"%s\" [shape=house;style=filled;color=cyan;width=5, height=2, fixedsize=true];\n", conf.Symbol)
 		gdata, err := d.symbGData(conf.Symbol, conf.DBInstance)
 		if err!= nil {
 			panic(err)
 		}
 		for _, i := range gdata {
-			graphOutput += fmt.Sprintf("\"%s\" [shape=\"ellipse\";style=filled;color=orange];\n", i)
-			graphOutput += symbGDataFuncOf(i, conf.DBInstance)
+			graphOutput += fmt.Sprintf("\"%s\" [shape=\"ellipse\";style=filled;color=orange;width=5, height=2, fixedsize=true];\n", i)
+			tmp := d.symbGDataFuncOf(i, conf.DBInstance)
+			for _, j := range tmp {
+				graphOutput += fmt.Sprintf("%s\n", j)
+			}
 		}
 	}
 	graphOutput += "}"

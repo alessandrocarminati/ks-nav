@@ -21,7 +21,7 @@ type Datasource interface {
 	symbSubsys(symblist []int, instance int) (string, error)
 	getEntryById(symbolId int, instance int) (entry, error)
 	symbGData(symb string, instance int) ([]string, error)
-	symbGDataFuncOf(gdata string, instance int) string
+	symbGDataFuncOf(gdata string, instance int) []string
 
 }
 
