@@ -4,8 +4,11 @@
   "db_instance": 1,
   "symbol": "start_kernel",
   "mode": 5,
-  "excluded_before": [],
-  "excluded_after": [".*rcu.*"],
+  "excluded_before": ["__fentry__","_raw_spin_.*"],
+  "excluded_after": ["call_rcu","panic","printk","scnprintf","kfree","vsnprintf","wake_up_q","schedule","__rcu_.*","rwsem_.*","^up$","^down$",
+  "ufshcd_probe_hba","^blk_.*","^bsg_.*","^dma_.*","^device_.*","^transport_.*","^rwsem_.*","^dev_.*","^devfreq_.*","^kmalloc.*",
+  "copy_to_user","put_user","fput","__fget"
+  ],
   "max_depth": 1,
   "output_type": "graphOnly",
   "target_subsys": [],
