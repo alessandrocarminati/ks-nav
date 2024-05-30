@@ -292,7 +292,7 @@ func (d *SqlDB) symbGData(symb string, instance int) ([]string, error) {
 	var out []string
 	var res string
 
-	query := fmt.Sprintf("select symbol_name from nm_symbol where nm_sym_id in (select data_sym_id from data_xrefs where func_id in (select symbol_id from symbols where symbol_name ='%s' and symbol_instance_id_ref=%d));", symb, instance)
+	query := fmt.Sprintf("select symbol_name from nm_symbol where nm_sym_id in (select data_sym_id from data_xrefs where func_id in (select symbol_id from symbols where symbol_name ='%s' and symtype!=1 and symbol_instance_id_ref=%d));", symb, instance)
 	debugQueryPrintln(query)
 	rows, err := d.db.Query(query)
 	if err != nil {
